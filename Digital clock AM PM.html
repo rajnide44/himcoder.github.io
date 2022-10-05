@@ -1,0 +1,333 @@
+<html>
+    <style>
+        body{
+            display:grid;
+            place-items: center;
+            place-content: center;
+            background-color:rgb(0, 0, 0);
+            color: rgb(228, 228, 228);
+        }
+        section{
+            min-height: 300px;
+            overflow-y: hidden;
+        }
+        .box{
+            min-height: 320px;
+            min-width:320px;
+            background-color:#303030;
+            color: rgb(200,200,200);
+            margin: 5px;
+            padding: 20px;
+            float: left;
+            font-size:300px;
+            font-weight: bold;
+            font-family:Arial, san-serif;
+            border-radius:20px;
+            display:flex;
+            place-items: center;
+            place-content: center;
+
+            position:relative;
+        }
+        .box::before{
+            content:"";
+            width:100%;
+            height:7px;
+            background-color: rgb(0, 0, 0);
+            position:absolute;
+            top:50%;
+            transform: translateY(-17px);
+        }
+        .colon_box{
+            min-height:320px;
+            max-width:20px;
+            background-color:#181818;
+            color: rgb(180,180,180);
+            margin: 5px;
+            padding: 20px;
+            float: left;
+            font-size:150px;
+            font-weight: bold;
+            font-family:Arial, san-serif;
+            border-radius:5px;
+            display:flex;
+            place-items: center;
+            place-content: center;
+        }
+        .am_pm{
+            height:55px;
+            width:100px;
+            background-color:#acacac28;
+            backdrop-filter: blur(5px);
+            color: rgb(180,180,180);
+            margin: 5px;
+            padding: 10px;
+            float: left;
+            font-size:50px;
+            font-weight: bold;
+            font-family:Arial, san-serif;
+            border-radius:5px;
+            display:flex;
+            place-items: center;
+            place-content: center;
+            
+            position:absolute;
+            left:50%;
+            bottom:5%;
+            transform: translateX(-60px);
+        }
+        .timer{
+            height:3px;
+            width: 100%;
+            background-color: #2e2e2eab;
+            display:flex;
+            place-items: center;
+            place-content: center;
+            backdrop-filter: blur(15px);
+            position:absolute;
+            bottom:0px;
+            left:0px;
+            transition: 0.5s;
+        }
+        .timer::before{
+            content:'<';
+            transform: rotate(90deg) translateY(8px);
+            font-size:35px;
+            border-radius:3px;
+            font-weight:bold;
+            display:flex;
+            place-items: center;
+            place-content: center;
+            position:absolute;
+            right:0px;
+            bottom:100%;
+            height:50px;
+            width:50px;
+            background-color: #20202091;
+            backdrop-filter: blur(5px);
+        }
+        .cont1{
+            height: 0px;
+            width:98%;
+            border-radius: 5px;
+            font-size:20px;
+            text-align: left;
+            background-color:#333;
+            transition: 0.5s;
+            overflow:hidden;
+        }
+        .addbtn{
+            color: white;
+            font-size: 30px;
+            border: 5px solid #181818;
+            border-radius: 5px;
+            background-color: #333;
+            width: 50px;
+            height: 50px;
+            overflow: hidden;
+            transition: 0.2s;
+        }
+        .addbtn:active{
+            background-color: #181818;
+            transition:0.4s ease-out;
+        }
+        .ttbtn{
+            width:60px;
+            overflow-y:hidden;
+            color: white;
+            font-size:20px;
+            border: 1px solid #111;
+            background-color: #202020; 
+            text-align: center;
+        }
+    </style>
+    <body>
+        <section id="sec">
+            <div class="box">02</div>
+            <!-- <div class="container_colon" style="max-width:20px;background-color:#000;">
+                <div class="colon_box">:</div>
+            </div>-->
+            <div class="colon_box" id="colon_box">:</div>
+            <div class="box">28</div>
+        </section>
+        <div class="am_pm" id="am_pm">AM</div>
+        <div class="timer" id="timer34" onclick="hideTim(this)" onmousewheel="hideTim(this)">
+            <div class="cont1" id="cont1" onclick="hideTim(0)">
+                <button class="addbtn" onclick="addbtn(this)" onmouseover="this.style.width='200px';this.style.backgroundColor='#444';this.innerHTML='<b>+</b>&nbsp; Add Timer';" onmouseleave="this.style.width='50px';this.style.backgroundColor='#181818';this.innerHTML='+';">+</button>
+                <div id="disp7" style="font-size:30px;display:none;transition: 0.5s;">
+                    <span id="disp"></span>
+                   <button style="border:1px solid rgba(0, 0, 255, 0.349);background-color:rgba(173, 188, 230, 0.37);font-size: 22px; border-radius:8px;" onclick="openfullscrn()">Full</button>
+                   <span style="float:right">
+                        <b>Time over = </b><span id="coutup"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <b>Time remaining = </b><span id="coutDown"></span>
+                    </span>
+                </div>
+                <div id="timing7" style="font-size:30px;visibility: hidden;transition: 0.5s;">
+                    Enter time :
+                    <input class="ttbtn" placeholder="hh" maxlength="2" type="number"/> : <input class="ttbtn" placeholder="mm" maxlength="2" type="number"/>
+                    <input style="border:1px solid rgba(0, 0, 255, 0.349);background-color:rgba(173, 188, 230, 0.5);font-size: 22px; border-radius:8px;" type="submit" id="subBtn" onclick="ttsthr=new Date().getHours();ttstmin=new Date().getMinutes();timeover();timerstrt();">
+                </div>
+            </div>
+        </div>
+    </body>
+    <script>
+        var am7=0; //0 for true;1 for false
+        format();time();keyboardInpu();
+        function format(){
+            var box=document.getElementsByClassName("box");
+            for(var x=0;x<box.length;x++){
+                box[x].style.width=40/100*screen.width+"px";
+                box[x].style.height=35/100*screen.width+"px";
+                box[x].style.fontSize=((30/100*screen.width)<300) ? "300px" : 30/100*screen.width+"px";
+            }
+            document.getElementById("colon_box").style.height=35/100*screen.width;
+        }
+
+        setInterval(function(){
+            time();
+        },300);
+        function time(){
+            var box=document.getElementsByClassName("box");
+            var dat=new Date(), hr,min;
+            hr=dat.getHours();
+            if(hr>12){
+                hr-=12;
+                document.getElementById("am_pm").innerHTML = "PM";
+                am=false;
+            }else  { document.getElementById("am_pm").innerHTML = "AM";
+                        am=true;
+                    }
+            min=dat.getMinutes();
+            hr=(hr<10)? "0"+hr: hr;
+            min=(min<10)?"0"+min:min;
+            box[0].innerHTML=hr;
+            box[1].innerHTML=min;
+        }
+
+        var hide=0;
+        function hideTim(z){
+            hide++;
+                z.onmouseover = function(){};
+                z.onmouseout = function(){};
+            if(hide==1){
+                hide=-1;
+                z.style.height="100px";
+                document.getElementById("cont1").style.height="80px";
+                document.getElementById("cont1").style.padding="5px";
+            }else   {
+                z.style.height="5px";
+                z.style.backgroundColor="#222222c4";
+                document.getElementById("cont1").style.height="0px";
+                document.getElementById("cont1").style.padding="0px";
+            }
+        }
+        function addbtn(sw){
+            sw.style.display="none";
+            document.getElementById("timing7").style.visibility="visible";
+        }
+        var ttsthr=0, ttstmin=0;
+        function timerstrt(){
+            //refresshing time
+            setInterval(function(){
+                    time();
+                },300);
+                document.getElementById("disp7").style.display="inline";
+
+            var ttbtn=document.getElementsByClassName("ttbtn"), disp=document.getElementById("disp");
+            ttbtn[0].value=(ttbtn[0].value>24)?24:ttbtn[0].value;
+            ttbtn[1].value=(ttbtn[1].value>59)?59:ttbtn[1].value;
+            var hr, min;
+            hr=(ttbtn[0].value==null)?0:ttbtn[0].value;
+            min=(ttbtn[1].value==null)?0:ttbtn[1].value;
+            //displaying countdown
+            if(hr<=(ttsthr-12) && min<=ttstmin){
+                ttsthr-=12;
+            }else   counDown(hr,min);
+            hr=(hr<10)?"0"+hr : hr;
+            min=(min<10)?"0"+min : min;
+            hr=(hr==0)?"00":hr;
+            min=(min==0)?"00":min
+            disp.innerHTML =hr +":"+ min+"&nbsp;&nbsp;&nbsp;";
+        }
+    function counDown(hr,min){
+            if(hr<ttsthr){
+            hrdown=((12-hr)+ttsthr)-12;
+            }
+            hrdown=hr-(ttsthr-12);
+
+                midown=min-ttstmin;
+            if(hrdown<0 && midown<0){
+                document.getElementById("coutDown").innerHTML= "00"+":"+"00";
+            } else
+            {
+                if(midown<1){
+                    midown=60-(-midown);
+                    hrdown--;
+                }
+                hrdown=(hrdown<10)?"0"+hrdown:hrdown;
+                midown=(midown<10)?"0"+midown:midown;
+            if(am==true){
+                hrdown=hr-ttsthr;
+            }
+                document.getElementById("coutDown").innerHTML= hrdown+":"+midown;
+                setInterval(function(){
+                    document.getElementById("subBtn").click();
+                },100);
+            }
+    }
+    var timovH=0,timovM=0,timovCond=0;
+function timeover(){
+    timovCond++;
+if(timovCond==1){
+    timovH=(ttsthr-12);
+    timovM=ttstmin;
+}
+var hrup, miup;
+hrup=ttsthr-timovH-12;
+hrup=(hrup<10)?"0"+hrup:hrup;
+miup= ttstmin-timovM;
+miup= (miup<10)? "0"+miup:miup;
+document.getElementById("coutup").innerHTML =hrup +":"+miup;
+}
+    var elem = document.body;
+
+/* When the openFullscreen() function is executed, open the video in fullscreen.
+Note that we must include prefixes for different browsers, as they don't support the requestFullscreen method yet */
+function openfullscrn() {
+  if (elem.requestFullscreen) {
+    elem.requestFullscreen();
+  } else if (elem.webkitRequestFullscreen) { /* Safari */
+    elem.webkitRequestFullscreen();
+  } else if (elem.msRequestFullscreen) { /* IE11 */
+    elem.msRequestFullscreen();
+  }
+}
+
+
+
+
+
+
+function keyboardInpu(){
+    document.addEventListener('keydown', function(event) {
+    if (event.keyCode == 38 || event.keyCode == 40) {
+        hideTim(document.getElementById("timer34"));
+    }
+    if (event.keyCode == 107) {
+        addbtn(document.getElementsByClassName("addbtn")[0]);
+    }
+});
+
+document.getElementsByClassName("ttbtn")[0].addEventListener('keydown', function(event) {
+    if (event.keyCode == 13) {
+        document.getElementById("subBtn").click();
+    }
+});
+document.getElementsByClassName("ttbtn")[1].addEventListener('keydown', function(event) {
+    if (event.keyCode == 13) {
+        document.getElementById("subBtn").click();
+    }
+});
+}
+    </script>
+</html>
